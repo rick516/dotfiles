@@ -139,8 +139,7 @@ function _fgg() {
 # git checkout branchをfzfで選択
 alias co='git checkout $(git branch -a | tr -d " " |fzf --height 100% --prompt "CHECKOUT BRANCH>" --preview "git log --color=always {}" | head -n 1 | sed -e "s/^\*\s*//g" | perl -pe "s/remotes\/origin\///g")'
 
-alias g='git'
-alias gg="git prep -n"
+alias gg="git grep -n"
 alias ga='git add'
 alias gd='git diff'
 alias gs='git status'
@@ -151,6 +150,7 @@ alias gst='git status'
 alias gco='git checkout'
 alias gf='git fetch'
 alias gc='git commit -m'
+alias gam='git commit -am'
 
 alias bi='bundle install'
 alias be='bundle exec'
@@ -162,4 +162,5 @@ alias rdm='bundle exec rake db:migrate'
 
 alias nrd='npm run dev'
 alias ns='nodemon server'
-alias tsts='tmux source =/.tmux.conf'
+alias tsts='tmux source ~/.tmux.conf'
+alias sz='source ~/.zshrc'
