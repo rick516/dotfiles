@@ -66,16 +66,22 @@ if dein#load_state('$HOME/.cache/dein')
   call dein#add('yuezk/vim-js')
 	call dein#add('maxmellon/vim-jsx-pretty')
 	call dein#add('posva/vim-vue')
+	" 設定は下記URLを参照
+	" https://github.com/posva/vim-vue
   call dein#add('Shougo/deoplete.nvim')
+	call dein#add('mattn/emmet-vim')
+	" if you use neovim, this if function is no need  
   if !has('nvim')
     call dein#add('roxma/nvim-yarp')
     call dein#add('roxma/vim-hug-neovim-rpc')
   endif
-  call dein#add('mattn/emmet-vim')
-	" You can specify revision/branch/tag.
 
 	call dein#end()
   call dein#save_state()
+endif
+
+if dein#check_install()
+  call dein#install()
 endif
 
 filetype plugin indent on
@@ -131,6 +137,9 @@ function! NERDCommenter_after()
 	endif
 endfunction
 
+" vueをhtmlとして認識させる
+autocmd BufNewFile,BufRead *.{html,htm,vue*} set filetype=html
+
 "ctags
 "初回の設定時は以下を参照
 " https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
@@ -168,3 +177,6 @@ let g:deoplete#enable_at_startup = 1
 
 " HTMLなどで対応するタグへジャンプする
 runtime macros/matchit.vim
+
+" emmet-vimのキーマップ
+let g:user_emmet_leader_key='<C-S>'
