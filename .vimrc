@@ -23,6 +23,8 @@ set hlsearch   " 検索文字列をハイライトする
 set confirm    " 保存されていないファイルがあるときは終了前に保存確認
 set visualbell t_vb= "ビープ無効 
 set noerrorbells "エラーメッセージの表示時にビープを鳴らさない
+set nocompatible
+
 "esc2回押したらハイライト消去
 nnoremap <Esc><Esc> :nohlsearch<CR><ESC>  
 syntax on "シンタックスハイライト
@@ -64,8 +66,6 @@ if dein#load_state('$HOME/.cache/dein')
   call dein#add('yuezk/vim-js')
 	call dein#add('maxmellon/vim-jsx-pretty')
 	call dein#add('posva/vim-vue')
-	call dein#add('kchmck/vim-coffee-script')
-	call dein#add('soramugi/auto-ctags.vim')
   call dein#add('Shougo/deoplete.nvim')
   if !has('nvim')
     call dein#add('roxma/nvim-yarp')
@@ -89,11 +89,10 @@ endif
 colorscheme iceberg
 
 "閉じかっこ補完 コピペの時は :set paste!を押してから（解除も同じコマンド）
-inoremap { {}<LEFT>
-inoremap [ []<LEFT>
-inoremap ( ()<LEFT>
-inoremap " ""<LEFT>
-inoremap ' ''<LEFT>
+noremap { {}<Left>
+inoremap {<Enter> {}<Left><CR><ESC><S-o>
+inoremap ( ()<ESC>i
+inoremap (<Enter> ()<Left><CR><ESC><S-o>
 
 "fzf周り
 nnoremap <C-p> :FZFFileList<CR>
@@ -104,21 +103,13 @@ command! FZFFileList call fzf#run({
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
 map <C-g> :Ag
 
-"閉じタグ補完
-augroup HTMLANDXMLANDJSX
-	autocmd!
-	autocmd Filetype xml inoremap <buffer> </ </<C-x><C-o><ESC>F<i
-	autocmd Filetype html inoremap <buffer> </ </<C-x><C-o><ESC>F<i
-  autocmd Filetype jsx inoremap <buffer> </ </<C-x><C-o><ESC>F<i
-augroup END
-
 "タブでauto completion
 function! s:check_back_space() abort
 	let col = col('.') - 1
 	return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-" .vueファイルのハイライト対応
+".vueファイルのハイライト対応
 autocmd FileType vue syntax sync fromstart
 let g:ft = ''
 function! NERDCommenter_before()
@@ -140,22 +131,32 @@ function! NERDCommenter_after()
 	endif
 endfunction
 
+"ctags
+"初回の設定時は以下を参照
+" https://qiita.com/aratana_tamutomo/items/59fb4c377863a385e032
+set tags=.tags;$HOME
 
-"coffeescript周り
-" vimにcoffeeファイルタイプを認識させる
-au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
-" インデント設定
-autocmd FileType coffee    setlocal sw=2 sts=2 ts=2 et
-"保存と同時にコンパイルする
-autocmd BufWritePost *.coffee silent make! 
-"エラーがあったら別ウィンドウで表示
-autocmd QuickFixCmdPost * nested cwindow | redraw! 
+function! s:execute_ctags() abort
+  " 探すタグファイル名
+  let tag_name = '.tags'
+  " ディレクトリを遡り、タグファイルを探し、パス取得
+  let tags_path = findfile(tag_name, '.;')
+  " タグファイルパスが見つからなかった場合
+  if tags_path ==# ''
+    return
+  endif
 
-"ctags周り
-let g:auto_ctags = 1
-let g:auto_ctags_directory_list = ['.git', '.svn']
-let g:auto_ctags_tags_args = ['--tag-relative=yes', '--recurse=yes', '--sort=es']
+  " タグファイルのディレクトリパスを取得
+  " `:p:h`の部分は、:h filename-modifiersで確認
+  let tags_dirpath = fnamemodify(tags_path, ':p:h')
+  " 見つかったタグファイルのディレクトリに移動して、ctagsをバックグラウンド実行（エラー出力破棄）
+  execute 'silent !cd' tags_dirpath '&& ctags -R -f' tag_name '2> /dev/null &'
+endfunction
 
+augroup ctags
+  autocmd!
+  autocmd BufWritePost * call s:execute_ctags()
+augroup END
 
 " vimでファイルを開いたときに、tmuxのwindow名にファイル名を表示
 if exists('$TMUX') && !exists('$NORENAME')
@@ -165,5 +166,5 @@ endif
 
 let g:deoplete#enable_at_startup = 1
 
-filetype plugin on
-source $VIMRUNTIMEmacros/matchit.vim
+" HTMLなどで対応するタグへジャンプする
+runtime macros/matchit.vim
