@@ -150,8 +150,6 @@ autocmd FileType coffee    setlocal sw=2 sts=2 ts=2 et
 autocmd BufWritePost *.coffee silent make! 
 "エラーがあったら別ウィンドウで表示
 autocmd QuickFixCmdPost * nested cwindow | redraw! 
-" Ctrl-cで右ウィンドウにコンパイル結果を一時表示する
-nnoremap <silent> <C-C> :CoffeeCompile vert <CR><C-w>h
 
 "ctags周り
 let g:auto_ctags = 1
@@ -167,3 +165,5 @@ endif
 
 let g:deoplete#enable_at_startup = 1
 
+filetype plugin on
+source $VIMRUNTIMEmacros/matchit.vim
