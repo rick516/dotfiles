@@ -5,7 +5,6 @@ set ambiwidth=double "全角記号崩れを防ぐ
 set number "行番号表示
 set virtualedit=block "矩形選択で自由に移動
 set wildmenu "タブでファイル名補完
-set backspace=indent,eol,start "insertモードでバックスペース
 set ignorecase "大文字小文字無視
 set wrapscan "検索末尾まで行ったら先頭に戻る
 set showmatch matchtime=1 "対応するかっこにカーソルが飛ぶ
@@ -16,7 +15,6 @@ set softtabstop=2 "連続した空白に対しタブで動く幅
 set tabstop=2  "画面上でタブが占める幅
 set guioptions-=m "メニューバー非表示
 set noswapfile "swpファイル作成しない"
-set title "タイトルを表示
 set clipboard=unnamed,autoselect "ヤンクでクリップボードにコピー
 set whichwrap=b,s,h,l,<,>,[,],~ "行またいで移動
 set hlsearch   " 検索文字列をハイライトする
@@ -66,9 +64,9 @@ if dein#load_state('$HOME/.cache/dein')
   call dein#add('yuezk/vim-js')
 	call dein#add('maxmellon/vim-jsx-pretty')
 	call dein#add('posva/vim-vue')
+	call dein#add('preservim/nerdtree')
 	" 設定は下記URLを参照
 	" https://github.com/posva/vim-vue
-  call dein#add('Shougo/deoplete.nvim')
 	call dein#add('mattn/emmet-vim')
 	" if you use neovim, this if function is no need  
   if !has('nvim')
@@ -173,10 +171,19 @@ if exists('$TMUX') && !exists('$NORENAME')
   au VimLeave * call system('tmux set-window automatic-rename on')
 endif
 
-let g:deoplete#enable_at_startup = 1
+let g:python3_host_prog = '/Users/k.murakami/.anyenv/envs/pyenv/shims/python'
 
 " HTMLなどで対応するタグへジャンプする
 runtime macros/matchit.vim
 
 " emmet-vimのキーマップ
 let g:user_emmet_leader_key='<C-S>'
+set runtimepath^=~/.vim/bundle/ag
+
+let g:sql_type_default = 'pgsql'
+
+" nerdtree
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
