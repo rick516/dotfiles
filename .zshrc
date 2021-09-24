@@ -48,17 +48,12 @@ setopt prompt_subst
 # プロンプトの右側(RPROMPT)にメソッドの結果を表示させる
 RPROMPT='`rprompt-git-current-branch`'
 
-alias ll='ls -l'
 
 # PATH
-export PATH=/usr/local/bin:$PATH
-export RUBY_CONFIGURE_OPTS="--with-readline-dir=$(brew --prefix readline) $RUBY_CONFIGURE_OPTS"
-export PATH=/usr/local/bin:/usr/bin
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
-export PATH=$HOME/.nodebrew/current/bin:$PATH
-export PATH="~/.rbenv/shims:/usr/local/bin:$PATH"
-eval "$(rbenv init -)"
-export PATH="/usr/local/opt/postgresql@9.6/bin:$PATH"
+export PATH="/usr/local/opt/postgresql@11/bin:$PATH"
+
+eval "$(anyenv init -)"
+
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 #tmux
@@ -146,7 +141,6 @@ alias gs='git status'
 alias gpl='git pull origin'
 alias gps='git push origin'
 alias gb='git branch'
-alias gst='git status'
 alias gco='git checkout'
 alias gf='git fetch'
 alias gc='git commit -m'
@@ -162,5 +156,11 @@ alias rdm='bundle exec rake db:migrate'
 
 alias nrd='npm run dev'
 alias ns='nodemon server'
-alias tsts='tmux source ~/.tmux.conf'
+alias tms='tmux source ~/.tmux.conf'
+alias tma='tmux attach -t'
+alias tmk='tmux kill-session -t'
+alias tmn='tmux new -s'
+alias tmls='tmux ls'
+
 alias sz='source ~/.zshrc'
+alias ll='ls -l'
